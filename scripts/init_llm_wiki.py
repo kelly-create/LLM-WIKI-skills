@@ -26,7 +26,7 @@ def render_template(text: str, values: dict[str, str]) -> str:
         "Last reviewed: TODO": f"Last reviewed: {values['today']}",
         "Open verification items: TODO": "Open verification items: none recorded",
         "## YYYY-MM-DD | init": f"## {values['today']} | init",
-        "- Source: TODO": f"- Source: initialized by build-llm-wiki.",
+        "- Source: TODO": "- Source: initialized by build-llm-wiki.",
         "- Notes: TODO": f"- Notes: {values['purpose']}",
         "- TODO: add first dated update.": f"- {values['today']}: initialized three-layer LLM Wiki.",
     }
