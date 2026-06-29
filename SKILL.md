@@ -27,6 +27,14 @@ Before changing anything, inspect the current directory and classify the situati
 
 If the root already contains only `raw/`, `schema/`, and `wiki/`, treat that root as the knowledge-base root. In that case, do not create extra root-level files or directories.
 
+For new knowledge bases, prefer the deterministic initializer:
+
+```bash
+python scripts/init_llm_wiki.py <knowledge-base-root> --project-key <key> --purpose "<purpose>"
+```
+
+If the target is a normal code repository, create a dedicated subdirectory such as `knowledge-base/` and initialize the three layers inside it.
+
 ## Core Capabilities
 
 ### 1. Identify and initialize
@@ -42,6 +50,8 @@ Determine whether to create, repair, or use a knowledge base. For a new strict k
 - `wiki/log.md`
 
 Use the templates in `assets/templates/`. Adjust only project-specific names, paths, and boundaries.
+
+When filesystem writes are allowed, run `scripts/init_llm_wiki.py` instead of hand-writing the starter files. The script never overwrites existing files unless `--force` is passed.
 
 ### 2. Collect and migrate
 
@@ -89,3 +99,4 @@ If the environment is read-only or permission-limited, output the exact proposed
 - For migrating existing agent memory or old notes, read `references/migration.md`.
 - For safety, conflicts, and lifecycle rules, read `references/governance.md`.
 - For reusable starter files, copy from `assets/templates/`.
+- For deterministic setup, run `scripts/init_llm_wiki.py`.
