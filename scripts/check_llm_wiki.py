@@ -26,6 +26,10 @@ SECRET_PATTERNS = (
 )
 
 WIKILINK_RE = re.compile(r"\[\[([^\]]+)\]\]")
+META_RE = re.compile(r"^-\s*([^:]+):\s*(.*)$")
+CARD_REQUIRED_FIELDS = ("Status", "Confidence", "Scope", "Source", "Last verified", "Tags")
+ALLOWED_STATUS = {"active", "needs-verification", "superseded", "deprecated"}
+ALLOWED_CONFIDENCE = {"observed", "inferred", "verified"}
 
 
 def rel(path: Path, root: Path) -> str:
@@ -50,11 +54,62 @@ def check_structure(root: Path, allow_extra_root: bool) -> list[str]:
     if cards_dir.exists() and not (cards_dir / "index.md").is_file():
         errors.append("missing file: wiki/cards/index.md")
 
+    memory_dir = root / "raw" / "memory"
+    if memory_dir.exists() and not (memory_dir / "index.md").is_file():
+        errors.append("missing file: raw/memory/index.md")
+
     if not allow_extra_root and root.exists():
         allowed = set(REQUIRED_DIRS)
         for item in root.iterdir():
             if item.name not in allowed:
                 errors.append(f"extra root entry in strict mode: {item.name}")
+
+    return errors
+
+
+def parse_metadata(text: str) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    for line in text.splitlines():
+        match = META_RE.match(line)
+        if match:
+            metadata[match.group(1).strip()] = match.group(2).strip()
+    return metadata
+
+
+def missing_or_todo(value: str | None) -> bool:
+    return value is None or value.strip().upper() == "TODO" or not value.strip()
+
+
+def check_cards(root: Path) -> list[str]:
+    errors: list[str] = []
+    cards_dir = root / "wiki" / "cards"
+    if not cards_dir.is_dir():
+        return errors
+
+    for card in cards_dir.rglob("*.md"):
+        if card.name == "index.md":
+            continue
+
+        metadata = parse_metadata(card.read_text(encoding="utf-8", errors="replace"))
+        card_name = rel(card, root)
+
+        for field in CARD_REQUIRED_FIELDS:
+            if field not in metadata:
+                errors.append(f"missing card metadata in {card_name}: {field}")
+
+        status = metadata.get("Status")
+        if status and status not in ALLOWED_STATUS:
+            errors.append(f"invalid card Status in {card_name}: {status}")
+
+        confidence = metadata.get("Confidence")
+        if confidence and confidence not in ALLOWED_CONFIDENCE:
+            errors.append(f"invalid card Confidence in {card_name}: {confidence}")
+
+        if confidence == "verified" and missing_or_todo(metadata.get("Source")):
+            errors.append(f"verified card lacks source in {card_name}")
+
+        if status == "active" and missing_or_todo(metadata.get("Scope")):
+            errors.append(f"active card lacks scope in {card_name}")
 
     return errors
 
@@ -118,6 +173,7 @@ def main() -> int:
 
     errors: list[str] = []
     errors.extend(check_structure(root, args.allow_extra_root))
+    errors.extend(check_cards(root))
     errors.extend(check_wikilinks(root))
     errors.extend(check_sensitive_content(root))
 
