@@ -1,4 +1,4 @@
 interface:
   display_name: "Build LLM Wiki"
-  short_description: "Build and maintain a three-layer agent knowledge base."
-  default_prompt: "Use $build-llm-wiki to initialize, migrate, maintain, query, and validate a three-layer LLM Wiki knowledge base."
+  short_description: "Build and maintain a governed agent knowledge lifecycle."
+  default_prompt: "Use $build-llm-wiki to initialize, migrate, maintain, query, and validate a three-layer LLM Wiki knowledge lifecycle."
