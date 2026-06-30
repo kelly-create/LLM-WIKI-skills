@@ -1,7 +1,5 @@
 # LLM Wiki Skills
 
-> 中文优先；English version is optional and included below.
-
 ## 中文
 
 ### 项目功能
