@@ -1,6 +1,6 @@
 ---
 name: build-llm-wiki
-description: Build, migrate, maintain, query, and validate a three-layer LLM Wiki knowledge base for agents. Use when an agent needs to create a project knowledge base from scratch, convert scattered notes or memory into raw/schema/wiki structure, record durable knowledge after work, read an existing LLM Wiki before answering, repair or validate a knowledge base, adopt a Qoder-style Repo Wiki / Knowledge Cards / Memory workflow, or define safe multi-agent knowledge-management rules.
+description: Build, migrate, maintain, query, and validate a three-layer LLM Wiki knowledge lifecycle for agents. Use when an agent needs to create a project knowledge base from scratch, convert scattered notes or memory into raw/schema/wiki structure, record durable knowledge after work, read an existing LLM Wiki before answering, repair or validate a knowledge base, synthesize Qoder-style Repo Wiki / Knowledge Cards / Memory ideas into a governed capture-to-wiki lifecycle, or define safe multi-agent knowledge-management rules.
 ---
 
 # Build LLM Wiki
@@ -14,6 +14,14 @@ Use this skill to help an agent create and operate a compact three-layer LLM Wik
 - `schema/`: rules that govern how agents read, write, validate, and protect the knowledge base.
 
 Keep the workflow simple. Do not turn the wiki into a second codebase or a dumping ground for transcripts.
+
+Use a lifecycle, not three competing fact stores:
+
+1. Capture observations and source material in `raw/`.
+2. Distill small reusable findings into `wiki/cards/`.
+3. Stabilize mature knowledge into canonical `wiki/` topic pages.
+4. Govern read/write/promotion rules in `schema/`.
+5. Retire stale knowledge with status labels and `wiki/log.md` entries.
 
 ## Operating Rule
 
@@ -50,6 +58,8 @@ Determine whether to create, repair, or use a knowledge base. For a new strict k
 - `wiki/index.md`
 - `wiki/overview.md`
 - `wiki/log.md`
+- `raw/memory/index.md`
+- `wiki/cards/index.md`
 
 Use the templates in `assets/templates/`. Adjust only project-specific names, paths, and boundaries.
 
@@ -69,7 +79,7 @@ Write behavior rules and maintenance constraints into `schema/`. Update `wiki/in
 
 Filter out chat noise, unverified guesses, transient debugging steps, and repeated source content.
 
-For Qoder-style knowledge centers, map Repo Wiki to stable `wiki/` topic pages, Knowledge Cards to compact `wiki/cards/` entries, and Memory to source-backed records under `raw/` until promoted. Read `references/knowledge-center.md` before designing or migrating that workflow.
+For Qoder-inspired workflows, do not merely map Repo Wiki, Knowledge Cards, and Memory into folders. Extract the useful behavior: automatic capture, compact reusable cards, searchable maturity signals, source-backed promotion, and stale-knowledge retirement. Read `references/knowledge-lifecycle.md` before designing or migrating that workflow.
 
 ### 4. Read and reuse
 
@@ -100,8 +110,8 @@ If the environment is read-only or permission-limited, output the exact proposed
 ## References
 
 - For architecture and layer rules, read `references/architecture.md`.
+- For the capture-to-card-to-wiki lifecycle, read `references/knowledge-lifecycle.md`.
 - For migrating existing agent memory or old notes, read `references/migration.md`.
-- For Qoder-style Repo Wiki, Knowledge Cards, and Memory mapping, read `references/knowledge-center.md`.
 - For safety, conflicts, and lifecycle rules, read `references/governance.md`.
 - For reusable starter files, copy from `assets/templates/`.
 - For deterministic setup, run `scripts/init_llm_wiki.py`.
