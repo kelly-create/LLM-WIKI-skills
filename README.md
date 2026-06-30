@@ -1,46 +1,43 @@
 # LLM Wiki Skills
 
-Codex skill for building and maintaining a three-layer LLM Wiki knowledge lifecycle.
+> 中文优先；English version is optional and included below.
 
-It helps agents start from zero, migrate scattered knowledge, and keep future work organized under a strict `raw/`, `schema/`, `wiki/` model.
+## 中文
 
-## What It Does
+### 项目功能
 
-- Initializes a new LLM Wiki from templates.
-- Migrates existing notes, memories, exported chats, logs, and documents into traceable source material.
-- Writes durable project knowledge into `wiki/`.
-- Synthesizes Qoder-inspired automatic memory, knowledge cards, and repo wiki ideas into a governed capture-to-wiki lifecycle.
-- Writes agent behavior rules and maintenance constraints into `schema/`.
-- Reads an existing wiki before answering project-specific questions.
-- Validates the structure and prevents duplicate or unsafe fact sources.
+这是一个给 Codex/Agent 使用的知识库 skill，用来从 0 构建、迁移、维护和读取项目知识库。
 
-## Three Layers
+它保持三层架构，同时引入知识生命周期：
+
+- 帮项目自动初始化 `raw/`、`schema/`、`wiki/`。
+- 把聊天、日志、截图、旧记忆、导入材料先保存为可追溯来源。
+- 把可复用的小经验提炼成知识卡片。
+- 把成熟、验证过的内容固化成项目 Wiki。
+- 用规则层约束后续 agent 的读写、提升、废弃和安全边界。
+- 校验结构、链接、敏感信息和知识卡片元数据。
+
+### 三层架构
 
 ```text
-raw/     source material, imports, logs, snapshots, evidence
-schema/  rules for how agents read, write, validate, and protect the wiki
-wiki/    structured reusable knowledge derived from sources
+raw/      来源层：记忆、日志、导入资料、操作记录、证据
+schema/   规则层：agent 行为规则、读写规则、提升规则、安全边界
+wiki/     知识层：知识卡片、主题页、概览、索引、稳定结论
 ```
 
-If a project root contains only these three directories, the skill treats that root as the knowledge-base root and does not create extra root-level files.
+### 知识生命周期
 
-## Knowledge Lifecycle
-
-The skill borrows the useful parts of Qoder's knowledge center while keeping one source-of-truth model. The result is a lifecycle, not a folder-for-folder clone:
-
-| Stage | Stored as | Use for |
+| 阶段 | 位置 | 作用 |
 | --- | --- | --- |
-| Capture | `raw/memory/` and other `raw/` source folders | chronological observations and evidence |
-| Distill | `wiki/cards/*.md` | compact reusable findings with confidence, scope, and source |
-| Stabilize | `wiki/overview.md`, topic pages, `wiki/index.md` | canonical project knowledge |
-| Govern | `schema/AGENTS.md` and schema references | read/write/promotion rules |
-| Retire | status labels plus `wiki/log.md` | stale, superseded, or deprecated knowledge |
+| Capture 捕获 | `raw/memory/`、其他 `raw/` 目录 | 保存原始观察和证据 |
+| Distill 提炼 | `wiki/cards/*.md` | 形成小而可复用的知识卡片 |
+| Stabilize 固化 | `wiki/overview.md`、主题页、`wiki/index.md` | 维护稳定项目知识 |
+| Govern 治理 | `schema/AGENTS.md`、规则文档 | 约束读写、提升、安全和协作 |
+| Retire 淘汰 | 状态标记、`wiki/log.md` | 标记过期、替代或废弃知识 |
 
-Cards include status, confidence, scope, source, verification date, and tags so agents can search and filter them without treating unverified notes as facts.
+### 安装
 
-## Install
-
-From Codex, install the repository root as the skill:
+在 Codex 中从 GitHub 安装仓库根目录：
 
 ```bash
 python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
@@ -49,53 +46,36 @@ python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github
   --name build-llm-wiki
 ```
 
-Restart Codex after installation so the skill metadata is loaded.
+安装后重启 Codex，让 skill 元数据生效。
 
-## Quick Start
+### 快速用法
 
-Ask Codex to use the skill:
+对 Codex 说：
 
 ```text
 Use build-llm-wiki to initialize a knowledge base for this project.
 ```
 
-For deterministic setup, the skill can run:
+也可以直接运行初始化脚本：
 
 ```bash
 python scripts/init_llm_wiki.py <knowledge-base-root> --project-key <key> --purpose "<purpose>"
 ```
 
-Then validate:
+初始化后校验：
 
 ```bash
 python scripts/check_llm_wiki.py <knowledge-base-root>
 ```
 
-## What Runs Automatically
+### 自动行为
 
-After installation, the skill can be selected automatically when the user asks to build, migrate, maintain, query, or validate an LLM Wiki.
+- 当用户要求构建、迁移、维护、查询或校验 LLM Wiki 时，Codex 可以自动触发这个 skill。
+- 目标路径明确且可写时，会自动创建标准三层结构和 starter files。
+- 它不会作为后台守护进程持续运行。
+- 路径不明确、会覆盖文件、环境只读或根目录冲突时，会先询问。
 
-When active, it automatically initializes the standard starter structure if the target has no knowledge base, the target path is clear, and filesystem writes are allowed. It does not ask for confirmation just to create `raw/`, `schema/`, `wiki/`, and the starter files.
-
-It also automatically applies the read order and safety rules:
-
-1. Read `schema/AGENTS.md`.
-2. Read `wiki/index.md`.
-3. Read `wiki/overview.md` and relevant topic pages when needed.
-4. Check `raw/` only when facts need source verification.
-
-It does not run as a background daemon after installation. It asks first when the target path is ambiguous, files would be overwritten, the environment is read-only, or the current root has conflicting entries.
-
-## How Future Agent Behavior Is Governed
-
-The skill governs future work in two ways:
-
-1. Skill triggering: when a user asks about LLM Wiki creation, migration, maintenance, reading, or validation, Codex can load `SKILL.md` and follow this workflow.
-2. Project rules: after initialization, the target project has `schema/AGENTS.md`. Future agents working in that knowledge base should read it before answering or editing project knowledge.
-
-For always-on background ingestion, scheduled sync, or cross-project monitoring, add a separate automation outside this skill. This repository intentionally stays focused on the reusable skill and its templates.
-
-## Repository Layout
+### 仓库结构
 
 ```text
 SKILL.md
@@ -119,8 +99,57 @@ assets/templates/
   wiki/topic.md
 ```
 
-## Safety
+### 安全规则
 
-Do not store plaintext passwords, API keys, tokens, cookies, private keys, connection strings, or unrelated personal data in the wiki.
+不要把明文密码、API key、token、cookie、私钥、连接串或无关个人信息写入知识库。
 
-Keep `raw/` as the evidence layer, `wiki/` as the derived knowledge layer, and `schema/` as the rule layer. Avoid copying large raw material into `wiki/`, and avoid creating multiple competing fact sources.
+`raw/` 是证据层，`wiki/` 是知识层，`schema/` 是规则层。稳定事实只保留一个权威位置，其他地方用链接引用，避免制造多个事实源。
+
+## English (Optional)
+
+### What This Project Does
+
+This repository provides a Codex skill for building and maintaining a three-layer LLM Wiki knowledge lifecycle.
+
+It helps agents initialize a knowledge base, preserve source evidence, distill reusable knowledge cards, stabilize verified knowledge into wiki pages, and enforce governance rules for future agents.
+
+### Architecture
+
+```text
+raw/      sources, memory, logs, imports, evidence
+schema/   agent rules, write rules, promotion rules, safety boundaries
+wiki/     cards, topic pages, overview, index, stable knowledge
+```
+
+### Lifecycle
+
+| Stage | Location | Purpose |
+| --- | --- | --- |
+| Capture | `raw/memory/` and `raw/` | preserve observations and evidence |
+| Distill | `wiki/cards/*.md` | create compact reusable findings |
+| Stabilize | `wiki/` topic pages | maintain canonical project knowledge |
+| Govern | `schema/` | define agent behavior and safety rules |
+| Retire | status labels and `wiki/log.md` | mark stale or replaced knowledge |
+
+### Install
+
+```bash
+python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo kelly-create/LLM-WIKI-skills \
+  --path . \
+  --name build-llm-wiki
+```
+
+Restart Codex after installation.
+
+### Quick Start
+
+```text
+Use build-llm-wiki to initialize a knowledge base for this project.
+```
+
+Validate after initialization:
+
+```bash
+python scripts/check_llm_wiki.py <knowledge-base-root>
+```
