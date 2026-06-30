@@ -29,6 +29,16 @@ Read in this order before answering project-specific questions:
 
 Write facts once. A durable fact should have one home page in `wiki/`, with links from index or related pages. Avoid spreading the same business rule or environment value across multiple pages.
 
+## Knowledge Center View
+
+When a project needs a Qoder-style knowledge center, keep the same three top-level layers and expose three views inside them:
+
+- Repo Wiki: stable `wiki/` overview and topic pages.
+- Knowledge Cards: compact `wiki/cards/` entries for atomic reusable knowledge.
+- Memory: dated source-backed records under `raw/`, promoted only after verification.
+
+See `references/knowledge-center.md` for promotion and maturity rules.
+
 ## Root Choices
 
 Use a strict knowledge-base root when the directory exists only for knowledge management. In that root, allow only `raw/`, `schema/`, and `wiki/`.
