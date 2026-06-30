@@ -14,6 +14,7 @@ FILES = (
     ("wiki/index.md", "wiki/index.md"),
     ("wiki/overview.md", "wiki/overview.md"),
     ("wiki/log.md", "wiki/log.md"),
+    ("wiki/cards-index.md", "wiki/cards/index.md"),
 )
 
 
