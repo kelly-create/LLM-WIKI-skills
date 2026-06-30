@@ -46,6 +46,10 @@ def check_structure(root: Path, allow_extra_root: bool) -> list[str]:
         if not (root / name).is_file():
             errors.append(f"missing file: {name}")
 
+    cards_dir = root / "wiki" / "cards"
+    if cards_dir.exists() and not (cards_dir / "index.md").is_file():
+        errors.append("missing file: wiki/cards/index.md")
+
     if not allow_extra_root and root.exists():
         allowed = set(REQUIRED_DIRS)
         for item in root.iterdir():
@@ -61,7 +65,11 @@ def check_wikilinks(root: Path) -> list[str]:
     if not wiki.is_dir():
         return errors
 
-    pages = {p.stem for p in wiki.rglob("*.md")}
+    pages: set[str] = set()
+    for page in wiki.rglob("*.md"):
+        pages.add(page.stem)
+        pages.add(page.relative_to(wiki).with_suffix("").as_posix())
+
     for page in wiki.rglob("*.md"):
         text = page.read_text(encoding="utf-8", errors="replace")
         for target in WIKILINK_RE.findall(text):
@@ -69,7 +77,7 @@ def check_wikilinks(root: Path) -> list[str]:
             if not name:
                 continue
             if name.endswith(".md"):
-                name = Path(name).stem
+                name = Path(name).with_suffix("").as_posix()
             if name not in pages:
                 errors.append(f"broken wikilink in {rel(page, root)}: [[{target}]]")
 
