@@ -6,10 +6,12 @@ Use this guide when an agent already has scattered knowledge, old memory, notes,
 
 1. Inventory available material before writing summaries.
 2. Copy or record source material under `raw/`.
-3. Extract only durable knowledge into `wiki/`.
-4. Move behavior rules, project conventions, and safety constraints into `schema/`.
-5. Update `wiki/index.md` and append a dated entry to `wiki/log.md`.
-6. Run `scripts/check_llm_wiki.py <root>`.
+3. Capture unpromoted observations under `raw/memory/` when they come from sessions or agent memory.
+4. Distill narrow reusable findings into `wiki/cards/`.
+5. Extract only verified durable knowledge into canonical `wiki/` topic pages.
+6. Move behavior rules, project conventions, and safety constraints into `schema/`.
+7. Update `wiki/index.md` and append a dated entry to `wiki/log.md`.
+8. Run `scripts/check_llm_wiki.py <root>`.
 
 ## What Belongs In Wiki
 
@@ -19,6 +21,14 @@ Use this guide when an agent already has scattered knowledge, old memory, notes,
 - Business rules and user preferences that affect future work.
 - Root causes, failed approaches, and validation evidence.
 - Known permission, sandbox, deployment, or production boundaries.
+
+## What Belongs In Cards
+
+- One verified or reusable pitfall.
+- One command pattern.
+- One environment rule with limited scope.
+- One recurring user or project preference.
+- One decision that may later become part of a topic page.
 
 ## What To Exclude
 
