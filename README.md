@@ -60,14 +60,16 @@ python scripts/check_llm_wiki.py <knowledge-base-root>
 
 After installation, the skill can be selected automatically when the user asks to build, migrate, maintain, query, or validate an LLM Wiki.
 
-When active, it automatically applies the read order and safety rules:
+When active, it automatically initializes the standard starter structure if the target has no knowledge base, the target path is clear, and filesystem writes are allowed. It does not ask for confirmation just to create `raw/`, `schema/`, `wiki/`, and the starter files.
+
+It also automatically applies the read order and safety rules:
 
 1. Read `schema/AGENTS.md`.
 2. Read `wiki/index.md`.
 3. Read `wiki/overview.md` and relevant topic pages when needed.
 4. Check `raw/` only when facts need source verification.
 
-It does not run as a background daemon. It does not create, migrate, overwrite, or delete files unless the user request or task context clearly calls for a write operation.
+It does not run as a background daemon after installation. It asks first when the target path is ambiguous, files would be overwritten, the environment is read-only, or the current root has conflicting entries.
 
 ## How Future Agent Behavior Is Governed
 
