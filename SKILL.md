@@ -1,6 +1,6 @@
 ---
 name: build-llm-wiki
-description: Build, migrate, maintain, query, and validate a three-layer LLM Wiki knowledge base for agents. Use when an agent needs to create a project knowledge base from scratch, convert scattered notes or memory into raw/schema/wiki structure, record durable knowledge after work, read an existing LLM Wiki before answering, repair or validate a knowledge base, or define safe multi-agent knowledge-management rules.
+description: Build, migrate, maintain, query, and validate a three-layer LLM Wiki knowledge base for agents. Use when an agent needs to create a project knowledge base from scratch, convert scattered notes or memory into raw/schema/wiki structure, record durable knowledge after work, read an existing LLM Wiki before answering, repair or validate a knowledge base, adopt a Qoder-style Repo Wiki / Knowledge Cards / Memory workflow, or define safe multi-agent knowledge-management rules.
 ---
 
 # Build LLM Wiki
@@ -69,6 +69,8 @@ Write behavior rules and maintenance constraints into `schema/`. Update `wiki/in
 
 Filter out chat noise, unverified guesses, transient debugging steps, and repeated source content.
 
+For Qoder-style knowledge centers, map Repo Wiki to stable `wiki/` topic pages, Knowledge Cards to compact `wiki/cards/` entries, and Memory to source-backed records under `raw/` until promoted. Read `references/knowledge-center.md` before designing or migrating that workflow.
+
 ### 4. Read and reuse
 
 Before answering project-specific questions, read in this order:
@@ -99,6 +101,7 @@ If the environment is read-only or permission-limited, output the exact proposed
 
 - For architecture and layer rules, read `references/architecture.md`.
 - For migrating existing agent memory or old notes, read `references/migration.md`.
+- For Qoder-style Repo Wiki, Knowledge Cards, and Memory mapping, read `references/knowledge-center.md`.
 - For safety, conflicts, and lifecycle rules, read `references/governance.md`.
 - For reusable starter files, copy from `assets/templates/`.
 - For deterministic setup, run `scripts/init_llm_wiki.py`.
