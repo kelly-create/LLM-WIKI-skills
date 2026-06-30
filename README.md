@@ -1,6 +1,6 @@
 # LLM Wiki Skills
 
-Codex skill for building and maintaining a three-layer LLM Wiki knowledge base.
+Codex skill for building and maintaining a three-layer LLM Wiki knowledge lifecycle.
 
 It helps agents start from zero, migrate scattered knowledge, and keep future work organized under a strict `raw/`, `schema/`, `wiki/` model.
 
@@ -9,7 +9,7 @@ It helps agents start from zero, migrate scattered knowledge, and keep future wo
 - Initializes a new LLM Wiki from templates.
 - Migrates existing notes, memories, exported chats, logs, and documents into traceable source material.
 - Writes durable project knowledge into `wiki/`.
-- Supports a Qoder-inspired Repo Wiki / Knowledge Cards / Memory view without adding a fourth top-level layer.
+- Synthesizes Qoder-inspired automatic memory, knowledge cards, and repo wiki ideas into a governed capture-to-wiki lifecycle.
 - Writes agent behavior rules and maintenance constraints into `schema/`.
 - Reads an existing wiki before answering project-specific questions.
 - Validates the structure and prevents duplicate or unsafe fact sources.
@@ -24,17 +24,19 @@ wiki/    structured reusable knowledge derived from sources
 
 If a project root contains only these three directories, the skill treats that root as the knowledge-base root and does not create extra root-level files.
 
-## Knowledge Center View
+## Knowledge Lifecycle
 
-The skill borrows the useful parts of Qoder's knowledge center while keeping one source-of-truth model:
+The skill borrows the useful parts of Qoder's knowledge center while keeping one source-of-truth model. The result is a lifecycle, not a folder-for-folder clone:
 
-| View | Stored as | Use for |
+| Stage | Stored as | Use for |
 | --- | --- | --- |
-| Repo Wiki | `wiki/overview.md`, topic pages, `wiki/index.md` | stable project knowledge |
-| Knowledge Cards | `wiki/cards/*.md` | small reusable facts, pitfalls, commands, and decisions |
-| Memory | dated records under `raw/` | chronological observations before promotion |
+| Capture | `raw/memory/` and other `raw/` source folders | chronological observations and evidence |
+| Distill | `wiki/cards/*.md` | compact reusable findings with confidence, scope, and source |
+| Stabilize | `wiki/overview.md`, topic pages, `wiki/index.md` | canonical project knowledge |
+| Govern | `schema/AGENTS.md` and schema references | read/write/promotion rules |
+| Retire | status labels plus `wiki/log.md` | stale, superseded, or deprecated knowledge |
 
-Cards include status, maturity, source, verification date, and tags so agents can search and filter them without treating unverified notes as facts.
+Cards include status, confidence, scope, source, verification date, and tags so agents can search and filter them without treating unverified notes as facts.
 
 ## Install
 
@@ -103,10 +105,11 @@ scripts/
   check_llm_wiki.py
 references/
   architecture.md
-  knowledge-center.md
+  knowledge-lifecycle.md
   migration.md
   governance.md
 assets/templates/
+  raw/memory-index.md
   schema/AGENTS.md
   wiki/card.md
   wiki/cards-index.md
