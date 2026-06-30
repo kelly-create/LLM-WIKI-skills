@@ -1,15 +1,19 @@
 # Knowledge Cards
 
-Small reusable facts, rules, pitfalls, commands, and decisions.
+Small reusable findings distilled from `raw/` before they become canonical wiki pages.
 
-## Active Cards
+## Verified Cards
 
-- Add card links here.
+- Add cards with `Confidence: verified` here.
+
+## Observed Or Inferred
+
+- Add cards with `Confidence: observed` or `Confidence: inferred` here.
 
 ## Needs Verification
 
-- Add uncertain or low-maturity cards here.
+- Add cards with `Status: needs-verification` here.
 
-## Deprecated
+## Retired
 
 - Move obsolete cards here with replacement links when available.
