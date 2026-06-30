@@ -69,6 +69,15 @@ When active, it automatically applies the read order and safety rules:
 
 It does not run as a background daemon. It does not create, migrate, overwrite, or delete files unless the user request or task context clearly calls for a write operation.
 
+## How Future Agent Behavior Is Governed
+
+The skill governs future work in two ways:
+
+1. Skill triggering: when a user asks about LLM Wiki creation, migration, maintenance, reading, or validation, Codex can load `SKILL.md` and follow this workflow.
+2. Project rules: after initialization, the target project has `schema/AGENTS.md`. Future agents working in that knowledge base should read it before answering or editing project knowledge.
+
+For always-on background ingestion, scheduled sync, or cross-project monitoring, add a separate automation outside this skill. This repository intentionally stays focused on the reusable skill and its templates.
+
 ## Repository Layout
 
 ```text
