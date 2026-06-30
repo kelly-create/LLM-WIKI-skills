@@ -29,15 +29,17 @@ Read in this order before answering project-specific questions:
 
 Write facts once. A durable fact should have one home page in `wiki/`, with links from index or related pages. Avoid spreading the same business rule or environment value across multiple pages.
 
-## Knowledge Center View
+## Knowledge Lifecycle
 
-When a project needs a Qoder-style knowledge center, keep the same three top-level layers and expose three views inside them:
+When a project needs Qoder-style automatic memory, cards, and repo wiki behavior, keep the same three top-level layers and express them as a lifecycle:
 
-- Repo Wiki: stable `wiki/` overview and topic pages.
-- Knowledge Cards: compact `wiki/cards/` entries for atomic reusable knowledge.
-- Memory: dated source-backed records under `raw/`, promoted only after verification.
+- Capture: source-backed observations under `raw/`.
+- Distill: compact reusable cards under `wiki/cards/`.
+- Stabilize: mature knowledge in canonical `wiki/` topic pages.
+- Govern: read/write/promotion rules under `schema/`.
+- Retire: stale or superseded knowledge marked in place and recorded in `wiki/log.md`.
 
-See `references/knowledge-center.md` for promotion and maturity rules.
+See `references/knowledge-lifecycle.md` for promotion and confidence rules.
 
 ## Root Choices
 
