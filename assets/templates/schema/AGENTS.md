@@ -19,11 +19,15 @@ This directory is a three-layer LLM Wiki knowledge base.
 ## Write Rules
 
 - Put source material in `raw/`.
-- Put durable summaries and reusable facts in `wiki/`.
+- Put observations and unpromoted memory in `raw/memory/`.
+- Put compact reusable findings in `wiki/cards/`.
+- Put durable canonical summaries and reusable facts in `wiki/`.
 - Put operating rules and constraints in `schema/`.
 - Update `wiki/index.md` and `wiki/log.md` after meaningful changes.
 - Prefer verified sources over stale wiki content.
 - Record conflicts in `wiki/log.md`.
+- Promote knowledge in order: raw source -> card -> canonical wiki page.
+- Do not keep duplicate fact sources; link cards to canonical pages when promoted.
 
 ## Safety
 
