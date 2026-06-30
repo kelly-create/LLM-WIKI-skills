@@ -30,8 +30,16 @@ Use simple status labels:
 - `superseded`: replaced by a newer source.
 - `deprecated`: retained for history only.
 
+Use confidence labels for cards:
+
+- `observed`: captured from source material but not generalized.
+- `inferred`: reasoned from evidence but not directly verified.
+- `verified`: checked against a direct source, live state, test, or repeated reliable use.
+
 ## Collaboration
 
 Agents should not maintain private parallel facts when a shared wiki exists. They should read the schema and index first, update the canonical page for durable facts, and leave a log entry explaining what changed and why.
 
 If the current agent cannot write files, it should output a proposed patch or file list and clearly say that the knowledge base was not updated.
+
+When a card is promoted into a canonical topic page, mark the card `superseded` or link it to the canonical page. Do not leave both as active competing fact sources.
