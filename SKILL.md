@@ -27,13 +27,15 @@ Before changing anything, inspect the current directory and classify the situati
 
 If the root already contains only `raw/`, `schema/`, and `wiki/`, treat that root as the knowledge-base root. In that case, do not create extra root-level files or directories.
 
-For new knowledge bases, prefer the deterministic initializer:
+If this skill is active because the user wants to build, initialize, or adopt an LLM Wiki, and the target has no knowledge base, initialize it automatically when the target path is clear and filesystem writes are allowed. Do not ask for confirmation just to create the standard starter structure. Ask only when the target path is ambiguous, the operation would overwrite existing files, the environment is read-only, or the current root has conflicting entries.
+
+For new knowledge bases, use the deterministic initializer:
 
 ```bash
 python scripts/init_llm_wiki.py <knowledge-base-root> --project-key <key> --purpose "<purpose>"
 ```
 
-If the target is a normal code repository, create a dedicated subdirectory such as `knowledge-base/` and initialize the three layers inside it.
+If the target is a normal code repository, default to a dedicated subdirectory such as `knowledge-base/` and initialize the three layers inside it.
 
 ## Core Capabilities
 
