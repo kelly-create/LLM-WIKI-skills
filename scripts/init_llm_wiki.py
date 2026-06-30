@@ -10,6 +10,7 @@ from pathlib import Path
 
 TEMPLATE_ROOT = Path(__file__).resolve().parents[1] / "assets" / "templates"
 FILES = (
+    ("raw/memory-index.md", "raw/memory/index.md"),
     ("schema/AGENTS.md", "schema/AGENTS.md"),
     ("wiki/index.md", "wiki/index.md"),
     ("wiki/overview.md", "wiki/overview.md"),
