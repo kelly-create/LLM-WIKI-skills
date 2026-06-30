@@ -9,6 +9,7 @@ It helps agents start from zero, migrate scattered knowledge, and keep future wo
 - Initializes a new LLM Wiki from templates.
 - Migrates existing notes, memories, exported chats, logs, and documents into traceable source material.
 - Writes durable project knowledge into `wiki/`.
+- Supports a Qoder-inspired Repo Wiki / Knowledge Cards / Memory view without adding a fourth top-level layer.
 - Writes agent behavior rules and maintenance constraints into `schema/`.
 - Reads an existing wiki before answering project-specific questions.
 - Validates the structure and prevents duplicate or unsafe fact sources.
@@ -22,6 +23,18 @@ wiki/    structured reusable knowledge derived from sources
 ```
 
 If a project root contains only these three directories, the skill treats that root as the knowledge-base root and does not create extra root-level files.
+
+## Knowledge Center View
+
+The skill borrows the useful parts of Qoder's knowledge center while keeping one source-of-truth model:
+
+| View | Stored as | Use for |
+| --- | --- | --- |
+| Repo Wiki | `wiki/overview.md`, topic pages, `wiki/index.md` | stable project knowledge |
+| Knowledge Cards | `wiki/cards/*.md` | small reusable facts, pitfalls, commands, and decisions |
+| Memory | dated records under `raw/` | chronological observations before promotion |
+
+Cards include status, maturity, source, verification date, and tags so agents can search and filter them without treating unverified notes as facts.
 
 ## Install
 
@@ -90,10 +103,13 @@ scripts/
   check_llm_wiki.py
 references/
   architecture.md
+  knowledge-center.md
   migration.md
   governance.md
 assets/templates/
   schema/AGENTS.md
+  wiki/card.md
+  wiki/cards-index.md
   wiki/index.md
   wiki/overview.md
   wiki/log.md
