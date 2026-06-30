@@ -11,7 +11,7 @@
 
 ## Knowledge Cards
 
-- [[cards/index]]: compact reusable facts, rules, pitfalls, commands, and decisions.
+- [[cards/index]]: compact reusable findings distilled from source material before promotion.
 
 ## Recent Updates
 
