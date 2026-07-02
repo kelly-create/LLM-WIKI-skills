@@ -65,6 +65,8 @@ Use the templates in `assets/templates/`. Adjust only project-specific names, pa
 
 When filesystem writes are allowed, run `scripts/init_llm_wiki.py` instead of hand-writing the starter files. The script never overwrites existing files unless `--force` is passed.
 
+The bundled Python scripts use only the Python standard library. If Python is not available in the target environment, copy the templates from `assets/templates/` manually and perform the same structural checks instead of claiming the scripts ran.
+
 ### 2. Collect and migrate
 
 Move source material into `raw/` or record its location there. Source material includes old notes, exported memories, chats, Markdown files, docs, scripts, incident logs, command outputs, and design decisions.

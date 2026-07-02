@@ -30,6 +30,8 @@ META_RE = re.compile(r"^-\s*([^:]+):\s*(.*)$")
 CARD_REQUIRED_FIELDS = ("Status", "Confidence", "Scope", "Source", "Last verified", "Tags")
 ALLOWED_STATUS = {"active", "needs-verification", "superseded", "deprecated"}
 ALLOWED_CONFIDENCE = {"observed", "inferred", "verified"}
+ALLOWED_STATUS_TEXT = ", ".join(sorted(ALLOWED_STATUS))
+ALLOWED_CONFIDENCE_TEXT = ", ".join(sorted(ALLOWED_CONFIDENCE))
 
 
 def rel(path: Path, root: Path) -> str:
@@ -95,21 +97,44 @@ def check_cards(root: Path) -> list[str]:
 
         for field in CARD_REQUIRED_FIELDS:
             if field not in metadata:
-                errors.append(f"missing card metadata in {card_name}: {field}")
+                errors.append(
+                    f"missing card metadata in {card_name}: {field}. "
+                    f"Required fields: {', '.join(CARD_REQUIRED_FIELDS)}"
+                )
 
         status = metadata.get("Status")
         if status and status not in ALLOWED_STATUS:
-            errors.append(f"invalid card Status in {card_name}: {status}")
+            hint = ""
+            if status in ALLOWED_CONFIDENCE:
+                hint = " Did you mean to put this value under Confidence?"
+            errors.append(
+                f"invalid card Status in {card_name}: {status}. "
+                f"Status is the lifecycle state; allowed values: {ALLOWED_STATUS_TEXT}."
+                f"{hint}"
+            )
 
         confidence = metadata.get("Confidence")
         if confidence and confidence not in ALLOWED_CONFIDENCE:
-            errors.append(f"invalid card Confidence in {card_name}: {confidence}")
+            hint = ""
+            if confidence in ALLOWED_STATUS:
+                hint = " Did you mean to put this value under Status?"
+            errors.append(
+                f"invalid card Confidence in {card_name}: {confidence}. "
+                f"Confidence is the evidence strength; allowed values: {ALLOWED_CONFIDENCE_TEXT}."
+                f"{hint}"
+            )
 
         if confidence == "verified" and missing_or_todo(metadata.get("Source")):
-            errors.append(f"verified card lacks source in {card_name}")
+            errors.append(
+                f"verified card lacks source in {card_name}. "
+                "Confidence: verified requires Source to point to raw evidence, a live check, a test, or an external source."
+            )
 
         if status == "active" and missing_or_todo(metadata.get("Scope")):
-            errors.append(f"active card lacks scope in {card_name}")
+            errors.append(
+                f"active card lacks scope in {card_name}. "
+                "Status: active requires Scope to say where the claim applies."
+            )
 
     return errors
 
