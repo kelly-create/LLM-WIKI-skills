@@ -1,48 +1,67 @@
-# LLM Wiki Architecture
+# Architecture and v2 contract
 
-Use a three-layer structure to keep agent knowledge simple, traceable, and safe.
+Three logical layers:
+- `raw/`: minimal redacted evidence, immutable observation events, migration backups.
+- `schema/`: governance and `wiki.json` configuration; disposable runtime state in `.state/`.
+- `wiki/`: reusable cards, canonical topics, generated navigation and append-only change log.
 
-## Layers
+Root infrastructure allowlist: `.git`, `.gitignore`, `.gitattributes`, `.gitmodules`, `README.md`, `AGENTS.md`,
+`CLAUDE.md`. Other root entries require `--allow-extra-root` in both init and check.
+Prefer an embedded knowledge-base directory in a normal code repository.
 
-- `raw/`: source material. Store imported chats, notes, exports, incident logs, command outputs, documents, and snapshots here. Do not edit raw material to make a conclusion look cleaner; add a redacted copy only when sensitive content must be removed.
-- `wiki/`: reusable knowledge. Store concise, source-backed summaries, procedures, decisions, environment notes, pitfalls, and interface facts here.
-- `schema/`: operating rules. Store agent instructions, write policies, naming conventions, privacy rules, and maintenance constraints here.
+## Identity and scope
 
-## Minimum Files
+Configuration contains schema_version=2, a stable project_id, human-readable project_key,
+project_root relative to the knowledge root, shared_root (default ~/.llm-wiki/shared), and
+shared=false. A legacy root without configuration has a temporary path-derived identity;
+the first v2 write persists it. Moving a configured knowledge base preserves its identity.
+project_root is an explicitly trusted configuration boundary for project_file evidence and
+project-relative checks; do not import this setting from source material.
 
-- `schema/AGENTS.md`: rules agents must read before working with the knowledge base.
-- `wiki/index.md`: entrypoint and topic map.
-- `wiki/overview.md`: project boundary and current state.
-- `wiki/log.md`: append-only update log.
+Shared and project libraries use separate identities. Publishing never broadens scope.
+A source supports a claim only in the environment where it was verified.
 
-## Read Order
+## Document format
 
-Read in this order before answering project-specific questions:
+New knowledge documents start with `---`, a JSON object, and another `---`, then Markdown.
+JSON duplicate keys and non-finite numbers are rejected. This format concerns knowledge
+pages; SKILL.md retains Agent Skills YAML frontmatter.
 
-1. `schema/AGENTS.md`
-2. `wiki/index.md`
-3. `wiki/overview.md`
-4. Relevant topic pages
-5. `raw/` only when the answer needs source verification
+Required metadata:
+- schema_version: 2; id: stable identifier; title: nonempty string.
+- kind: lesson, fact, procedure, decision, topic or overview.
+- project_id: owning library identity; scope: string-to-string environment map.
+- status: active, needs-verification, superseded or deprecated.
+- confidence: observed, inferred or verified.
+- sources: nonempty array; tags, related and conflicts: string arrays.
+- verified_at: ISO date or null; review_after: ISO date or null.
+- superseded_by: replacement id when superseded.
+- rules: optional declarative checks; volatile: optional boolean.
 
-## Write Rule
+A verified document additionally requires verification.outcome=passed and a nonempty
+verification.method. `resolve` requires verification.scope to exactly equal scope.
+Its evidence is an agent attestation tied to accessible source bytes, not a proof that an
+arbitrary statement is true. Failed or inaccessible verification must remain a candidate.
 
-Write facts once. A durable fact should have one home page in `wiki/`, with links from index or related pages. Avoid spreading the same business rule or environment value across multiple pages.
+Sources:
+- file: path relative to knowledge root and sha256 of source bytes.
+- project_file: path relative to configured project root and sha256.
+- url: http(s) URL without credentials and checked_at ISO date. Retrieval/semantic
+  verification happens in the agent, not in the offline engine.
 
-## Knowledge Lifecycle
+Local references are containment-checked after resolving symlinks. Sources changing
+their bytes make dependent knowledge non-actionable until reverified.
+Related/conflicting/replacement IDs resolve within one library.
 
-When a project needs Qoder-style automatic memory, cards, and repo wiki behavior, keep the same three top-level layers and express them as a lifecycle:
+## Storage and retrieval
 
-- Capture: source-backed observations under `raw/`.
-- Distill: compact reusable cards under `wiki/cards/`.
-- Stabilize: mature knowledge in canonical `wiki/` topic pages.
-- Govern: read/write/promotion rules under `schema/`.
-- Retire: stale or superseded knowledge marked in place and recorded in `wiki/log.md`.
+Single-writer locks, expected content fingerprints and per-operation journals protect writes.
+Multi-file replacement is recoverable, not filesystem-wide atomic: readers using this engine
+refuse pending transactions. Direct text editors do not have this guarantee.
+Journals contain before/after text for rollback; runtime state is ignored by Git.
+Do not remove transaction state before deciding whether rollback is needed.
 
-See `references/knowledge-lifecycle.md` for promotion and confidence rules.
-
-## Root Choices
-
-Use a strict knowledge-base root when the directory exists only for knowledge management. In that root, allow only `raw/`, `schema/`, and `wiki/`.
-
-When adding a knowledge base to a code repository, create it under a dedicated subdirectory such as `knowledge-base/`, then apply the same three-layer contract inside that subdirectory.
+Markdown navigation uses managed blocks; other content is preserved.
+The disposable search inventory records document fingerprints. Search currently reads live
+documents and evidence, avoiding stale-cache answers; this is deliberately simple and linear
+in library size. Chinese bigrams and English/code tokens support offline lexical retrieval.

@@ -1,49 +1,49 @@
-# Migration Guide
+# Compatibility, explicit migration and rollback
 
-Use this guide when an agent already has scattered knowledge, old memory, notes, documents, or exports.
+V1 documents remain readable. Only the initial metadata list after the title is parsed;
+body/code examples cannot override it. Legacy conclusions are always candidates in retrieval.
+Malformed or incomplete metadata is reported, never invented.
 
-## Process
+1. Run check and doctor; inspect unresolved sources and conflicts.
+2. Run migrate without --apply to preview conversions and skipped documents.
+3. Run migrate --apply only when migration has been explicitly requested.
+4. Valid convertible pages receive v2 identities and needs-verification/observed status.
+   Old metadata remains available, including its free-text scope; it is not guessed into a
+   machine scope. Retired legacy relations and incomplete pages remain unchanged.
+5. Backups are preserved under raw/migrations/<operation-id>/ with original relative paths.
+6. Reverify evidence and map environment scope before marking migrated knowledge verified.
 
-1. Inventory available material before writing summaries.
-2. Copy or record source material under `raw/`.
-3. Capture unpromoted observations under `raw/memory/` when they come from sessions or agent memory.
-4. Distill narrow reusable findings into `wiki/cards/`.
-5. Extract only verified durable knowledge into canonical `wiki/` topic pages.
-6. Move behavior rules, project conventions, and safety constraints into `schema/`.
-7. Update `wiki/index.md` and append a dated entry to `wiki/log.md`.
-8. Run `scripts/check_llm_wiki.py <root>`.
+Use recover <root> --operation-id <migration-id> --rollback to undo a migration.
+Rollback restores original UTF-8 bytes and removes files created by that transaction,
+unless later edits conflict. Recovery never destroys such later edits.
+The returned migration result includes rollback_argv with the complete rollback command.
 
-## What Belongs In Wiki
+Old init/check entrypoints remain available. Strict root validation is now consistent with
+init; use --allow-extra-root explicitly where needed. --force remains accepted but preserves
+existing knowledge instead of replacing accumulated logs or rules.
 
-- Stable environment facts and path conventions.
-- API contracts, schemas, interfaces, and command entrypoints.
-- Operational procedures and verified recovery steps.
-- Business rules and user preferences that affect future work.
-- Root causes, failed approaches, and validation evidence.
-- Known permission, sandbox, deployment, or production boundaries.
+A Python-less agent can read the knowledge manually, but cannot claim that CLI validation,
+write locking, migration backup or preflight enforcement ran.
 
-## What Belongs In Cards
 
-- One verified or reusable pitfall.
-- One command pattern.
-- One environment rule with limited scope.
-- One recurring user or project preference.
-- One decision that may later become part of a topic page.
+## Minimal v1 card accepted for migration
 
-## What To Exclude
+```markdown
+# Deployment prerequisite
 
-- Chat filler and task negotiation.
-- Long command logs unless the log itself is the evidence.
-- Unverified guesses.
-- Full source files copied into wiki pages.
-- Secrets, credentials, cookies, private keys, or plaintext connection strings.
+- Status: active
+- Confidence: verified
+- Scope: Linux deployment fixture
+- Source: raw/deployment-check.txt
+- Last verified: 2026-10-16
+- Tags: deployment
 
-## Provenance
+## Claim
 
-Every important wiki page should identify where its facts came from. Use short source references such as:
+Prepare the configuration before deployment.
+```
 
-- `Source: raw/chats/2026-06-29-session.md`
-- `Source: raw/incidents/payment-timeout-2026-06.md`
-- `Verified by: command output in raw/ops/check-2026-06-29.txt`
-
-If a source cannot be checked, mark the conclusion as `needs-verification`.
+The referenced file must exist. A historical date and label do not make the converted
+card trusted: the conversion still requires fresh verification. Backups and rollback
+preserve UTF-8 bytes, including CRLF. The result provides rollback_argv with the exact
+entrypoint and knowledge-root arguments.
