@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "date": "2026-10-17",
+  "status": "passed",
+  "scope": "Deterministic verification only; model improvement gates are reported separately.",
+  "runtime_tests_digest": "390f13fe26d46e5a1d9262cde885c69a74732ee8ce5dcfcbbd16f490c0b5ef67",
+  "windows": [
+    {"python": "3.10.11", "core_tests": 72, "core_seconds": 23.553, "incremental_gate_tests": 3, "offline_scenarios": 20, "passed": true},
+    {"python": "3.12.14", "core_tests": 72, "core_seconds": 21.548, "incremental_gate_tests": 3, "offline_scenarios": 20, "passed": true},
+    {"python": "3.15.0", "core_tests": 72, "core_seconds": 20.851, "incremental_gate_tests": 3, "offline_scenarios": 20, "passed": true}
+  ],
+  "linux": [
+    {"python": "3.10.22", "core_tests": 72, "core_seconds": 72.183, "incremental_gate_tests": 3, "offline_scenarios": 20, "passed": true},
+    {"python": "3.15.0", "core_tests": 72, "core_seconds": 58.735, "incremental_gate_tests": 3, "offline_scenarios": 20, "passed": true}
+  ],
+  "verification_strategy": "Full 72-test runtime suite, then 3 isolated acceptance-boundary tests after a one-line evaluation threshold fix. Runtime behavior was unchanged by the latter patch; combined discovery is 75. The full 75-test suite was not redundantly rerun.",
+  "linux_isolation": "Offline Debian 13 x86_64 guest, no NIC, dedicated disk overlay; all owned VMs shut down normally with exit 0.",
+  "package_and_extracted_cli": "Passed on Windows and both Linux versions for the 72-test runtime snapshot; final documentation/report packaging is checked separately.",
+  "probe_harness": {
+    "unit_test_methods_passed": 18,
+    "final_targeted_tests_passed": 2,
+    "legal_repair_scenarios": 20,
+    "known_bad_actual_call_scenarios": 20,
+    "diagnostic_stress_calls": 200,
+    "diagnostic_stress_failures": 0,
+    "diagnostic_stress_host_events": 200,
+    "temporary_exclusive_lock": "Passed: read recovery preserves native exit 7 and exactly one operation event.",
+    "persistent_exclusive_lock": "Passed: three bounded read retries, four retained errors, exit 2/unknown; operation not repeated.",
+    "finding": "A reproduced response-open PermissionError overlapped atomic replacement after the writer had closed its stream. The deeper Windows filter/sandbox cause and the original two anomalies cannot be proven from retained evidence.",
+    "action_checker_sha256": "2593976301f2e41552bda3e1bf01ec904edc16857e306b0a63aa14bdfdda19a2",
+    "action_client_sha256": "2b290839eb0c0d8dfc3eebfa3c0c877fd2643ed8283100be7a1a4d224097af19",
+    "validation_report_sha256": "ce3e04e5b354b32244590fca799e1ff305c4dac21faf0f25d3963e41fa81785b"
+  },
+  "host_harness_binding_tests_passed": 5,
+  "release_gate_passed": false,
+  "release_note": "These checks alone do not establish the real-agent recall, repeated-error or tool-call improvement targets. Claude testing was removed from required acceptance by the user. Hosted GitHub CI has not run before push."
+}

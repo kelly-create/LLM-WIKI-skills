@@ -1,0 +1,149 @@
+{
+  "mode": "offline",
+  "scenario_count": 20,
+  "top3_recall": 1.0,
+  "retrieval_gate_passed": true,
+  "cases": [
+    {
+      "scenario": "ssh-route",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.16951279999921098,
+      "summary_characters": 538
+    },
+    {
+      "scenario": "ssh-auth",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.177781700000196,
+      "summary_characters": 496
+    },
+    {
+      "scenario": "arm-image",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.21422620000157622,
+      "summary_characters": 1003
+    },
+    {
+      "scenario": "script-format",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.15387100000225473,
+      "summary_characters": 485
+    },
+    {
+      "scenario": "db-port",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.1682875000005879,
+      "summary_characters": 1522
+    },
+    {
+      "scenario": "db-socket",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.181970800000272,
+      "summary_characters": 1066
+    },
+    {
+      "scenario": "env-reload",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.19145200000275509,
+      "summary_characters": 1593
+    },
+    {
+      "scenario": "permission",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.15455650000149035,
+      "summary_characters": 1525
+    },
+    {
+      "scenario": "tls-clock",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.16773409999950672,
+      "summary_characters": 523
+    },
+    {
+      "scenario": "tls-chain",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.14289199999984703,
+      "summary_characters": 491
+    },
+    {
+      "scenario": "dns",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.19593929999973625,
+      "summary_characters": 1003
+    },
+    {
+      "scenario": "cache",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.19165389999761828,
+      "summary_characters": 1596
+    },
+    {
+      "scenario": "schema-version",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.13327559999743244,
+      "summary_characters": 511
+    },
+    {
+      "scenario": "path-space",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.11138140000184649,
+      "summary_characters": 485
+    },
+    {
+      "scenario": "review-due",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.12298319999899832,
+      "summary_characters": 1525
+    },
+    {
+      "scenario": "source-change",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.13266999999905238,
+      "summary_characters": 1543
+    },
+    {
+      "scenario": "conflict-a",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.12812659999690368,
+      "summary_characters": 1102
+    },
+    {
+      "scenario": "conflict-b",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.14675760000318405,
+      "summary_characters": 1606
+    },
+    {
+      "scenario": "hostile-source",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.12935039999865694,
+      "summary_characters": 588
+    },
+    {
+      "scenario": "config-prereq",
+      "top3_hit": true,
+      "applicability_correct": true,
+      "seconds": 0.1880641999996442,
+      "summary_characters": 1543
+    }
+  ],
+  "limitations": "Synthetic lexical retrieval only; no real-agent improvement or repair-success claim."
+}

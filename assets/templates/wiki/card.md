@@ -1,29 +1,38 @@
-# Card Title
+---
+{
+  "schema_version": 2,
+  "id": "REPLACE_WITH_STABLE_ID",
+  "title": "Experience title",
+  "kind": "lesson",
+  "project_id": "REPLACE_WITH_PROJECT_ID",
+  "scope": {},
+  "status": "needs-verification",
+  "confidence": "observed",
+  "sources": [],
+  "verified_at": null,
+  "review_after": null,
+  "tags": [],
+  "related": [],
+  "conflicts": [],
+  "superseded_by": null,
+  "rules": []
+}
+---
 
-- Status: active
-- Confidence: observed
-- Scope: TODO
-- Source: TODO
-- Last verified: TODO
-- Tags: TODO
+# Experience title
 
-## Claim
+Use record to populate IDs, evidence and fingerprints automatically.
 
-TODO
+## Symptoms
 
-## Use When
+## Attempts and outcomes
 
-TODO
+## Hypotheses (unverified)
 
-## Evidence
+## Root cause and evidence
 
-TODO
+## Repair and success criteria
 
-## Promotion
+## Does not apply when
 
-- Canonical page: TODO
-- Promotion rule: promote after verification or repeated use.
-
-## Related
-
-- TODO
+## Next discriminating check

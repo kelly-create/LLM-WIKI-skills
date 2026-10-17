@@ -1,0 +1,32 @@
+name: Validate skill
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.10', '3.15']
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python scripts/validate_skill.py . --format json
+      - run: python -m unittest discover -s tests -v
+      - run: python scripts/evaluate.py --mode offline --output .eval-runs/offline.json
+      - run: python scripts/package_skill.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evaluation-${{ matrix.os }}-${{ matrix.python }}
+          path: |
+            .eval-runs/*.json
+            dist/*.zip

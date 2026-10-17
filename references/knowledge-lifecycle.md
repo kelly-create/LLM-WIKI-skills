@@ -1,91 +1,57 @@
-# Knowledge Lifecycle
+# Experience lifecycle
 
-Use this protocol to combine the best parts of Qoder-style knowledge centers and the three-layer LLM Wiki.
+Failure evidence must distinguish what the program printed, what the shell returned,
+and what the host tool reported. Wrappers and pipelines can replace native exit codes.
+When the native status is not exposed, record the wrapper status with its origin and
+leave the native status unknown. Do not upgrade an inferred value into an observation.
 
-The goal is not to clone Repo Wiki, Knowledge Cards, and Memory as separate fact stores. The goal is to move knowledge through a governed lifecycle so agents can capture experience quickly, reuse it safely, and retire it when stale.
+1. Search relevant project and applicable shared knowledge before substantial work.
+2. Preflight a matched operation with explicit environment and operation identity.
+3. Capture a reusable observation, correction or failure using record.
+4. Test the proposed repair, preserve evidence, then resolve with the tested scope.
+5. Promote a durable verified conclusion into a topic or publish generalized experience.
+6. Mark stale, contradicted, superseded or deprecated knowledge so it cannot silently guide work.
 
-## Extracted Strengths
+## Failure lessons
 
-Qoder-style knowledge centers are strong at:
+Capture symptoms/error signature, operation, environment, attempted method and observed
+result, root-cause evidence, unverified hypotheses, repair proposal, success criterion,
+exclusions and next discriminating check. Store compact redacted evidence, not a transcript.
 
-- automatic memory capture during work
-- compact knowledge cards for reusable snippets
-- visible search, filtering, and maturity signals
-- a Repo Wiki surface that is easy for humans to browse
+A fingerprint includes project identity, full scope, operation and normalized error.
+Normalization removes whitespace differences, timestamps and UUIDs; it preserves error
+codes, paths, versions and operation semantics. Exact matches accumulate occurrences.
+Semantic similarity only influences retrieval: it never merges causes automatically.
 
-The three-layer LLM Wiki is strong at:
+Repeated failure after resolution makes the card need verification again. Occurrences do
+not increase confidence. An unresolved failure can warn about a failed approach without
+claiming a known root cause or repair.
 
-- separating sources, rules, and derived knowledge
-- preserving provenance and evidence
-- avoiding duplicate fact sources
-- staying portable across agents and tools
-- enforcing safety and collaboration boundaries
+## Verification and freshness
 
-## Synthesized Lifecycle
+Candidates are observed and need verification. Resolve requires new accessible evidence,
+a passed check, a method, date and exactly matching environment scope.
+Resolve retains previous sources as history and uses new sources for current validity.
 
-| Stage | Home | Purpose | Exit Rule |
-| --- | --- | --- | --- |
-| Capture | `raw/` and `raw/memory/` | Preserve observations, imports, logs, and source evidence | A reusable finding is identified |
-| Distill | `wiki/cards/` | Store one compact claim, rule, pitfall, command, or decision | The finding is verified or repeatedly reused |
-| Stabilize | `wiki/` topic pages | Maintain canonical project knowledge | The fact becomes durable project context |
-| Govern | `schema/` | Define read, write, promotion, safety, and collaboration rules | Rules are reflected in agent behavior |
-| Retire | status labels and `wiki/log.md` | Mark stale, superseded, or deprecated knowledge | Readers can find the replacement or reason |
+Code-related facts follow project_file fingerprints. Volatile live facts require a fresh
+check in the current task, passed as live_verified_ids. Other knowledge may specify
+review_after. Conflicts make a conclusion non-actionable until reconciled with evidence.
+The caller must not assert live verification merely to silence a warning.
 
-## Promotion Rules
+Promotion preserves evidence, scope and verification. The original card becomes superseded
+and points at the topic. Shared publication creates a separately owned portable conclusion;
+the original project card remains authoritative for that project.
 
-Promote knowledge only in one direction:
+## Shared promotion
 
-1. Capture source material in `raw/`.
-2. Distill reusable findings into `wiki/cards/`.
-3. Stabilize mature findings into canonical topic pages.
-4. Record meaningful changes in `wiki/log.md`.
-5. Mark old cards or pages as `superseded` or `deprecated` instead of duplicating facts.
+Provide an explicit generalized body and public checked URL evidence, plus a basis:
+normative-source or cross-environment-test. Do not copy private incident details.
+Existing scope stays unchanged. To broaden it, first independently verify a new card with
+that scope. Project-specific file fingerprints and knowledge-root checks cannot be shared.
+Publishing to the shared library is a single transaction in that library.
 
-Skip the card stage only for clearly broad, verified project knowledge that naturally belongs in a topic page.
+## Retirement and conflicts
 
-## Card Contract
-
-Every card should be atomic and include:
-
-- `Status`: `active`, `needs-verification`, `superseded`, or `deprecated`
-- `Confidence`: `observed`, `inferred`, or `verified`
-- `Scope`: where the claim applies
-- `Source`: raw path, live check, or external source
-- `Last verified`: date or `TODO`
-- `Tags`: short labels for retrieval
-
-Confidence meanings:
-
-- `observed`: captured from a session, log, screenshot, or note, but not generalized.
-- `inferred`: reasoned from available evidence, but not directly verified.
-- `verified`: checked against a direct source, live state, test, or repeated reliable use.
-
-High-risk answers should not rely on `observed` or `inferred` cards without source verification.
-
-## Canonicalization
-
-When a card becomes part of stable project knowledge:
-
-1. Move or summarize the fact into the relevant topic page.
-2. Link the card to the canonical page.
-3. Mark the card `superseded` if keeping it would create a duplicate fact source.
-4. Update `wiki/index.md` when a new topic page is created.
-5. Update `wiki/log.md` with the source and reason.
-
-## Agent Workflow
-
-When working in a project with this skill:
-
-1. Read `schema/AGENTS.md`, then `wiki/index.md`.
-2. Use topic pages for stable facts.
-3. Use cards for compact reusable findings.
-4. Use `raw/` when a claim needs source verification.
-5. After meaningful work, capture new evidence in `raw/`, distill reusable findings into cards, and promote only verified durable facts.
-
-## Invariants
-
-- Do not keep private parallel memory when a shared wiki exists.
-- Do not write the same durable fact into multiple places.
-- Do not promote secrets or unnecessary personal data.
-- Do not treat generated memory as truth without provenance.
-- Do not make the lifecycle a blocker for simple tasks; capture only what will help future agents.
+Retain history; link superseded knowledge to its replacement. Do not delete the old evidence.
+A source change means “reverify,” not automatically “false.” Record opposing evidence before
+resolving a conflict. Do not automatically change permissions or governance based on a lesson.

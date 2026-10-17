@@ -4,10 +4,10 @@
 from __future__ import annotations
 
 import argparse
-import py_compile
 import re
-import tempfile
+import json
 from pathlib import Path
+from llm_wiki.model import scan_secrets, configure_utf8
 
 
 REQUIRED_PATHS = (
@@ -16,6 +16,14 @@ REQUIRED_PATHS = (
     "scripts/init_llm_wiki.py",
     "scripts/check_llm_wiki.py",
     "scripts/validate_skill.py",
+    "scripts/wiki.py",
+    "scripts/llm_wiki/model.py",
+    "scripts/llm_wiki/storage.py",
+    "scripts/llm_wiki/engine.py",
+    "references/cli.md",
+    "references/evaluation.md",
+    "references/validation.md",
+    "evals/scenarios.json",
     "references/architecture.md",
     "references/knowledge-lifecycle.md",
     "references/migration.md",
@@ -32,14 +40,7 @@ REQUIRED_PATHS = (
 
 SKILL_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,62}$")
 RESOURCE_RE = re.compile(r"`((?:references|scripts|assets)/[A-Za-z0-9_./-]+)`")
-SECRET_PATTERNS = (
-    re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
-    re.compile(
-        r"(?i)\b(api[_-]?key|secret|token|password|passwd|cookie)\b\s*[:=]\s*"
-        r"['\"]?[A-Za-z0-9_./+=@:-]{12,}"
-    ),
-    re.compile(r"(?i)\b(?:postgres|mysql|mongodb|redis)://[^ \n\r\t]+"),
-)
+
 
 
 def rel(path: Path, root: Path) -> str:
@@ -126,43 +127,39 @@ def check_resource_links(root: Path) -> list[str]:
         if not (root / normalized).exists():
             errors.append(f"referenced resource does not exist: {target}")
 
+    for path in [root / "README.md", skill, *(root / "references").glob("*.md")]:
+        if not path.is_file():
+            continue
+        body = re.sub(r"(?ms)^(```|~~~).*?^\1[^\n]*$", "", path.read_text(encoding="utf-8"))
+        for target in re.findall(r"\[[^\]\n]+\]\(([^)\n]+)\)", body):
+            if target.startswith(("https://", "http://", "#")):
+                continue
+            candidate = (path.parent / target.split("#", 1)[0]).resolve()
+            if not candidate.is_relative_to(root) or not candidate.exists():
+                errors.append("broken documentation link in " + rel(path, root))
+
     return errors
 
 
 def check_sensitive_content(root: Path) -> list[str]:
-    errors: list[str] = []
-    for path in root.rglob("*"):
-        if not path.is_file():
-            continue
-        if ".git" in path.parts:
-            continue
-        if path.suffix.lower() not in {".md", ".py", ".yaml", ".yml", ".json", ".txt", ".toml"}:
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        for pattern in SECRET_PATTERNS:
-            if pattern.search(text):
-                errors.append(f"possible secret in {rel(path, root)}")
-                break
-    return errors
+    return ["possible secret in " + item["path"] for item in scan_secrets(root)]
 
 
 def check_python_compile(root: Path) -> list[str]:
     errors: list[str] = []
-    scripts = ("scripts/init_llm_wiki.py", "scripts/check_llm_wiki.py", "scripts/validate_skill.py")
-    with tempfile.TemporaryDirectory(prefix="build-llm-wiki-pycompile-") as tmp:
-        out = Path(tmp)
-        for script in scripts:
-            path = root / script
-            try:
-                py_compile.compile(str(path), cfile=str(out / (path.stem + ".pyc")), doraise=True)
-            except py_compile.PyCompileError as exc:
-                errors.append(f"python compile failed for {script}: {exc.msg}")
+    for path in (root / "scripts").rglob("*.py"):
+        try:
+            compile(path.read_text(encoding="utf-8-sig"), str(path), "exec")
+        except (SyntaxError, OSError) as exc:
+            errors.append(f"python compile failed for {rel(path, root)}: {type(exc).__name__}")
     return errors
 
 
 def main() -> int:
+    configure_utf8()
     parser = argparse.ArgumentParser(description="Validate the build-llm-wiki skill package.")
     parser.add_argument("root", nargs="?", default=".", help="Skill repository root")
+    parser.add_argument("--format", choices=("text", "json"), default="text")
     args = parser.parse_args()
 
     root = Path(args.root).resolve()
@@ -180,6 +177,9 @@ def main() -> int:
     errors.extend(check_sensitive_content(root))
     errors.extend(check_python_compile(root))
 
+    if args.format == "json":
+        print(json.dumps({"schema_version": 2, "command": "validate_skill", "status": "error" if errors else "ok", "diagnostics": errors}))
+        return 1 if errors else 0
     for error in errors:
         print(f"ERROR: {error}")
 
